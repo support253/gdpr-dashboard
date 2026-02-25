@@ -1,17 +1,16 @@
-import { fetchGDPRData } from '@/lib/sheets';
+import { fetchGDPRData, type GDPRRow } from '@/lib/sheets';
 import { Dashboard } from '@/components/Dashboard';
 
 export const revalidate = 300;
 
 export default async function Home() {
-  let rows;
-  let error = null;
+  let rows: GDPRRow[] = [];
+  let error: string | null = null;
 
   try {
     rows = await fetchGDPRData();
   } catch (e) {
     error = e instanceof Error ? e.message : 'Failed to fetch data';
-    rows = [];
   }
 
   return (
