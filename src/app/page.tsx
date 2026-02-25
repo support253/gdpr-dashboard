@@ -1,5 +1,6 @@
 import { fetchGDPRData, type GDPRRow } from '@/lib/sheets';
 import { Dashboard } from '@/components/Dashboard';
+import { LogoutButton } from '@/components/LogoutButton';
 
 export const revalidate = 300;
 
@@ -16,14 +17,19 @@ export default async function Home() {
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-        <header className="mb-10 text-center">
-          <h1 className="font-heading text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            GDPR Compliance Dashboard
-          </h1>
-          <p className="mt-2 text-sm text-muted">
-            Automated audit of {rows.length} n8n workflow{rows.length !== 1 ? 's' : ''} &middot; Updates every 5 min
-          </p>
-        </header>
+        <div className="mb-10">
+          <div className="flex items-center justify-end">
+            <LogoutButton />
+          </div>
+          <header className="text-center">
+            <h1 className="font-heading text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              GDPR Compliance Dashboard
+            </h1>
+            <p className="mt-2 text-sm text-muted">
+              Automated audit of {rows.length} n8n workflow{rows.length !== 1 ? 's' : ''} &middot; Updates every 5 min
+            </p>
+          </header>
+        </div>
 
         {error && (
           <div className="mb-6 rounded-xl border border-risk-high/20 bg-risk-high/5 p-4 text-sm text-risk-high">
