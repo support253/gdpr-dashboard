@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sessionToken, safeEqual } from '../../../../lib/auth-token';
+
+export const runtime = 'edge';
 
 export async function POST(request: NextRequest) {
   const { password } = await request.json();
@@ -11,12 +14,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (password !== correctPassword) {
+  if (typeof password !== 'string' || !safeEqual(password, correctPassword)) {
     return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
   }
 
   const response = NextResponse.json({ success: true });
-  response.cookies.set('gdpr-auth', 'authenticated', {
+  response.cookies.set('gdpr-auth', await sessionToken(correctPassword), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sessionToken, safeEqual } from './lib/auth-token';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow login page and auth API routes through
@@ -8,9 +9,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for auth cookie
+  // Check for a valid signed auth cookie
   const authCookie = request.cookies.get('gdpr-auth');
-  if (authCookie?.value === 'authenticated') {
+  const secret = process.env.DASHBOARD_PASSWORD;
+  if (secret && authCookie?.value && safeEqual(authCookie.value, await sessionToken(secret))) {
     return NextResponse.next();
   }
 
